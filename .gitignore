@@ -4,3 +4,5 @@ elm-stuff
 repl-temp-*
 # node modules
 **/**/node_modules
+# build files
+dist
