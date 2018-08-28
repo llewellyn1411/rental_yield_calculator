@@ -5,14 +5,50 @@ type alias AppName =
     String
 
 
+type alias Mortgage =
+    Float
+
+
+type alias Interest =
+    Float
+
+
+type alias Period =
+    Int
+
+
+type alias Rent =
+    Float
+
+
+type alias Payments =
+    Float
+
+
+type alias NetYield =
+    Float
+
+
+type alias GrossYield =
+    Float
+
+
+type alias MonthlyInterest =
+    Float
+
+
+type alias MonthlyPeriod =
+    Float
+
+
 type alias Model =
-    { mortgage : Float
-    , interest : Float
-    , period : Int
-    , rent : Float
-    , mortgagePayments : Float
-    , netYield : Float
-    , grossYield : Float
+    { mortgage : Mortgage
+    , interest : Interest
+    , period : Period
+    , rent : Rent
+    , payments : Payments
+    , netYield : NetYield
+    , grossYield : GrossYield
     }
 
 

@@ -35,7 +35,7 @@ submitForm model =
             gYield =
                 grossYield model.rent model.mortgage
         in
-        { model | mortgagePayments = mortgagePayments, netYield = nYield, grossYield = gYield }
+        { model | payments = mortgagePayments, netYield = nYield, grossYield = gYield }
 
 
 setField : FormField -> String -> Model -> Model
@@ -54,12 +54,12 @@ setField field value model =
             { model | rent = String.toFloat value |> Result.withDefault 0 }
 
 
-monthlyInterest : Float -> Float
+monthlyInterest : Interest -> MonthlyInterest
 monthlyInterest interest =
     (interest / 100) / 12
 
 
-monthlyRepayment : Float -> Float -> Float -> Float
+monthlyRepayment : Mortgage -> MonthlyInterest -> MonthlyPeriod -> Payments
 monthlyRepayment principal monthlyInterest numberOfPayments =
     let
         a =
@@ -71,7 +71,7 @@ monthlyRepayment principal monthlyInterest numberOfPayments =
     principal * (a / b)
 
 
-netYield : Float -> Float -> Float -> Float
+netYield : Payments -> Rent -> Mortgage -> Float
 netYield mortgagePayments rent mortgage =
     let
         expenses =
@@ -83,6 +83,6 @@ netYield mortgagePayments rent mortgage =
     ((income - expenses) / mortgage) * 100
 
 
-grossYield : Float -> Float -> Float
+grossYield : Rent -> Mortgage -> Float
 grossYield rent mortgage =
     ((rent * 11) / mortgage) * 100

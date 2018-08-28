@@ -42,7 +42,7 @@ formView model =
 
 resultView : Model -> Html Msg
 resultView model =
-    if model.mortgagePayments == 0 then
+    if model.payments == 0 then
         p [] [ text "Please fill in the form below" ]
     else
         let
@@ -56,7 +56,7 @@ resultView model =
                 Round.round 2 model.interest
 
             repayments =
-                Round.round 2 model.mortgagePayments
+                Round.round 2 model.payments
 
             netYield =
                 Round.round 2 model.netYield
@@ -64,21 +64,25 @@ resultView model =
             grossYield =
                 Round.round 2 model.grossYield
 
-            result =
-                "Based on a mortgage value of "
+            summary =
+                "Based on a mortgage value of £"
                     ++ value
                     ++ " with "
                     ++ interest
                     ++ "% interest your monthly repayments would be £"
                     ++ repayments
-                    ++ ". This will result in a Gross Yield of "
+                    ++ "."
+
+            result =
+                "This will result in a Gross Yield of "
                     ++ grossYield
                     ++ "% and a Net Yield of "
                     ++ netYield
                     ++ "%"
         in
         div []
-            [ p [] [ text result ]
+            [ p [] [ text summary ]
+            , p [] [ text result ]
             ]
 
 
@@ -98,11 +102,11 @@ fieldsView model =
         , div [ class "row" ]
             [ div [ class "input-field col s6" ]
                 [ Html.input [ placeholder "Mortgage Period", type_ "number", id "mortgage_period", required True, value (toString model.period), onInput <| Messages.SetField Period ] []
-                , label [ for "mortgage_period", class "active" ] [ text "Mortgage Period" ]
+                , label [ for "mortgage_period", class "active" ] [ text "Mortgage Period (Years)" ]
                 ]
             , div [ class "input-field col s6" ]
                 [ Html.input [ placeholder "Rental Income", type_ "number", required True, id "rental_income", value (toString model.rent), onInput <| Messages.SetField Rent ] []
-                , label [ for "rental_income", class "active" ] [ text "Rental Income" ]
+                , label [ for "rental_income", class "active" ] [ text "Rental Income (Monthly)" ]
                 ]
             ]
         ]
