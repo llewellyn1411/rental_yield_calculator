@@ -1,5 +1,6 @@
 module Update exposing (..)
 
+import Calculations exposing (..)
 import Messages exposing (Msg)
 import Models exposing (..)
 
@@ -19,21 +20,21 @@ update msg model =
 
 submitForm : Model -> Model
 submitForm model =
-    if model.mortgage == 0 || model.interest == 0 || model.period == 0 || model.rent == 0 then
+    if model.mortgage == 0 || model.interest == 1 || model.period == 0 || model.rent == 0 then
         model
     else
         let
             r =
-                monthlyInterest model.interest
+                Calculations.monthlyInterest model.interest
 
             mortgagePayments =
-                monthlyRepayment model.mortgage r (toFloat model.period * 12)
+                Calculations.monthlyRepayment model.mortgage r (toFloat model.period * 12)
 
             nYield =
-                netYield mortgagePayments model.rent model.mortgage
+                Calculations.netYield mortgagePayments model.rent model.mortgage
 
             gYield =
-                grossYield model.rent model.mortgage
+                Calculations.grossYield model.rent model.mortgage
         in
         { model | payments = mortgagePayments, netYield = nYield, grossYield = gYield }
 
@@ -52,37 +53,3 @@ setField field value model =
 
         Rent ->
             { model | rent = String.toFloat value |> Result.withDefault 0 }
-
-
-monthlyInterest : Interest -> MonthlyInterest
-monthlyInterest interest =
-    (interest / 100) / 12
-
-
-monthlyRepayment : Mortgage -> MonthlyInterest -> MonthlyPeriod -> Payments
-monthlyRepayment principal monthlyInterest numberOfPayments =
-    let
-        a =
-            monthlyInterest * ((1 + monthlyInterest) ^ numberOfPayments)
-
-        b =
-            (1 + monthlyInterest) ^ numberOfPayments - 1
-    in
-    principal * (a / b)
-
-
-netYield : Payments -> Rent -> Mortgage -> Float
-netYield mortgagePayments rent mortgage =
-    let
-        expenses =
-            mortgagePayments * 12
-
-        income =
-            rent * 11
-    in
-    ((income - expenses) / mortgage) * 100
-
-
-grossYield : Rent -> Mortgage -> Float
-grossYield rent mortgage =
-    ((rent * 11) / mortgage) * 100
